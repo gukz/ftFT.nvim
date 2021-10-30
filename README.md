@@ -1,4 +1,4 @@
-#### NeoVim f|t|F|T<char> with buffer safe highlight
+#### Pure lua plugin give f|t|F|T{char} __buffer safe__ highlight
 
 #### add below codes to your plugin config
 
@@ -25,6 +25,6 @@ vnoremap F <cmd>lua require('ftFT').execute('F')<CR>
 vnoremap T <cmd>lua require('ftFT').execute('T')<CR>
 ```
 
-#### use f|t|F|T<char>, you will see different things, enjoy it!
+#### use f|t|F|T{char}, you will see different things, enjoy it!
 
-[image](https://github.com/gukz/ftFT.nvim/blob/master/image/nvim_ftFT.png)
+![image](https://github.com/gukz/ftFT.nvim/blob/master/image/nvim_ftFT.png)
