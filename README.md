@@ -27,4 +27,4 @@ vnoremap T <cmd>lua require('ftFT').execute('T')<CR>
 
 #### use f|t|F|T<char>, you will see different things, enjoy it!
 
-[image]()
+[image](https://github.com/gukz/ftFT.nvim/blob/master/image/nvim_ftFT.png)
