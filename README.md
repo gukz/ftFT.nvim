@@ -1,4 +1,4 @@
-#### Pure lua plugin give f|t|F|T{char} __buffer safe__ highlight
+#### Pure lua plugin give f|t|F|T{char} __buffer safe__ highlights
 
 #### add below codes to your plugin config
 
@@ -24,6 +24,6 @@ noremap yf <cmd>lua require('ftFT').execute('yf')<CR>
 noremap cf <cmd>lua require('ftFT').execute('cf')<CR>
 ```
 
-#### use f|t|F|T{char}, you will see different things, enjoy it!
+#### use f|t|F|T{char}, you will see something different, enjoy it!
 
 ![image](https://github.com/gukz/ftFT.nvim/blob/master/image/nvim_ftFT.png)
