@@ -48,6 +48,7 @@ function M.execute(key)
   local curpos = vim.fn.getcurpos()
   local cur_row, cur_col = curpos[2], curpos[3]
   local line_content = vim.api.nvim_buf_get_lines(0, cur_row - 1, cur_row, false)[1]
+  local hl_group = vim.g.ftFT_hl_group or 'Search'
 
   local cur_ns = vim.api.nvim_create_namespace('hop_grey_cur')
   local hl_amount = 0
@@ -56,7 +57,7 @@ function M.execute(key)
     -- item: { "a", 0 }
     hl_amount = hl_amount + 1
     vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row - 1, item[2], {
-      virt_text = {{item[1], "Search"}},
+      virt_text = {{item[1], hl_group}},
       virt_text_pos = 'overlay',
       hl_mode = 'combine',
       priority = 65500
@@ -70,7 +71,7 @@ function M.execute(key)
     if type(key2) == 'number' then
       key2 = vim.fn.nr2char(key2)
     end
-    vim.cmd(':execute("normal! ' .. key .. key2 .. '")')
+    vim.api.nvim_feedkeys(key..key2, 'n', false)
   end
   vim.api.nvim_buf_clear_namespace(0, cur_ns, 0, -1)
 end

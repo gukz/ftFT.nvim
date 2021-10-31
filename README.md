@@ -5,23 +5,29 @@
 ``` lua
     ...
     { "some other plugin name" },
-    
+
     { "gukz/ftFT.nvim" },
-    
+
     { "some other plugin name" },
     ...
 ```
 
 #### map to default f t F T or your own favourite keys
-```
-noremap f <cmd>lua require('ftFT').execute('f')<CR>
-noremap t <cmd>lua require('ftFT').execute('t')<CR>
-noremap F <cmd>lua require('ftFT').execute('F')<CR>
-noremap T <cmd>lua require('ftFT').execute('T')<CR>
+```vim
+nnoremap f <cmd>lua require('ftFT').execute('f')<CR>
+nnoremap t <cmd>lua require('ftFT').execute('t')<CR>
+nnoremap F <cmd>lua require('ftFT').execute('F')<CR>
+nnoremap T <cmd>lua require('ftFT').execute('T')<CR>
 
-noremap df <cmd>lua require('ftFT').execute('df')<CR>
-noremap yf <cmd>lua require('ftFT').execute('yf')<CR>
-noremap cf <cmd>lua require('ftFT').execute('cf')<CR>
+nnoremap df <cmd>lua require('ftFT').execute('df')<CR>
+nnoremap yf <cmd>lua require('ftFT').execute('yf')<CR>
+nnoremap cf <cmd>lua require('ftFT').execute('cf')<CR>
+```
+
+#### Change highlight group used if you want
+```vim
+" This is default
+let g:ftFT_hl_group = 'Search'
 ```
 
 #### use f|t|F|T{char}, you will see something different, enjoy it!
