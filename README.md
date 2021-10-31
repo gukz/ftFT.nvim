@@ -14,15 +14,14 @@
 
 #### map to default f t F T or your own favourite keys
 ```
-nnoremap f <cmd>lua require('ftFT').execute('f')<CR>
-nnoremap t <cmd>lua require('ftFT').execute('t')<CR>
-nnoremap F <cmd>lua require('ftFT').execute('F')<CR>
-nnoremap T <cmd>lua require('ftFT').execute('T')<CR>
+noremap f <cmd>lua require('ftFT').execute('f')<CR>
+noremap t <cmd>lua require('ftFT').execute('t')<CR>
+noremap F <cmd>lua require('ftFT').execute('F')<CR>
+noremap T <cmd>lua require('ftFT').execute('T')<CR>
 
-vnoremap f <cmd>lua require('ftFT').execute('f')<CR>
-vnoremap t <cmd>lua require('ftFT').execute('t')<CR>
-vnoremap F <cmd>lua require('ftFT').execute('F')<CR>
-vnoremap T <cmd>lua require('ftFT').execute('T')<CR>
+noremap df <cmd>lua require('ftFT').execute('df')<CR>
+noremap yf <cmd>lua require('ftFT').execute('yf')<CR>
+noremap cf <cmd>lua require('ftFT').execute('cf')<CR>
 ```
 
 #### use f|t|F|T{char}, you will see different things, enjoy it!

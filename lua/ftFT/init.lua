@@ -15,7 +15,7 @@ local function generate_ftFT_indexs(key, cur_col, line_content)
   --   { "b", 3 },
   --   { "c", 5 },
   -- }
-  if #line_content > 250 then
+  if #line_content > 300 then
     return {}
   end
   if (not string.upper(key) == "F") and (not string.upper(key) == "T") then
@@ -51,8 +51,8 @@ function M.execute(key)
 
   local cur_ns = vim.api.nvim_create_namespace('hop_grey_cur')
   local hl_amount = 0
-  local items = generate_ftFT_indexs(key, cur_col, line_content)
-  for _, item in pairs(items) do
+  local mode_key = key:sub(#key, #key)
+  for _, item in pairs(generate_ftFT_indexs(mode_key, cur_col, line_content)) do
     -- item: { "a", 0 }
     hl_amount = hl_amount + 1
     vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row - 1, item[2], {
