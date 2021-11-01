@@ -41,6 +41,28 @@ end
 
 local M = {}
 
+function M.setup()
+  local key_bind_opt = { noremap = true, silent = true }
+  local total_keys = { "f", "t", "F", "T" }
+  if vim.g.ftFT_disable_keymap_n == nil then
+    for _, key in ipairs(total_keys) do
+      vim.api.nvim_set_keymap("n", key, "<cmd>lua require('ftFT').execute('"..key.."')<CR>", key_bind_opt)
+    end
+  end
+  if vim.g.ftFT_disable_keymap_v == nil then
+    for _, key in ipairs(total_keys) do
+      vim.api.nvim_set_keymap("v", key, "<cmd>lua require('ftFT').execute('"..key.."')<CR>", key_bind_opt)
+    end
+  end
+  if vim.g.ftFT_disable_keymap_ydc == nil then
+    for _, key in ipairs(total_keys) do
+      vim.api.nvim_set_keymap("n", "y"..key, "<cmd>lua require('ftFT').execute('y"..key.."')<CR>", key_bind_opt)
+      vim.api.nvim_set_keymap("n", "d"..key, "<cmd>lua require('ftFT').execute('d"..key.."')<CR>", key_bind_opt)
+      vim.api.nvim_set_keymap("n", "c"..key, "<cmd>lua require('ftFT').execute('c"..key.."')<CR>", key_bind_opt)
+    end
+  end
+end
+
 function M.execute(key)
   local curpos = vim.fn.getcurpos()
   local cur_row, cur_col = curpos[2], curpos[3]
