@@ -12,7 +12,7 @@ use f|t|F|T{char}, you will see something different, enjoy it!
     { "some other plugin name" },
 
     { "gukz/ftFT.nvim",
-      config = function require("ftFT").setup() end
+      config = function() require("ftFT").setup() end
     },
 
     { "some other plugin name" },
@@ -23,7 +23,7 @@ use f|t|F|T{char}, you will see something different, enjoy it!
 1. by default, ftFT will use `Search` highlight to display, you can custom it by set `ftFT_hl_group`, shown as below
 ``` lua
     { "gukz/ftFT.nvim",
-      config = function
+      config = function()
         vim.g.ftFT_hl_group = 'Todo' -- will use Todo highlitgt, default is Search
 
         require("ftFT").setup()  -- this will create default keymapping for you
@@ -35,7 +35,7 @@ use f|t|F|T{char}, you will see something different, enjoy it!
 2. by default, `require("ftFT").setup()` will create key binding for all `ftFT` in normal, visual and `yf,df,cf` mode, if you don't like this keymapping, you can disable part of them, shown as below
 ``` lua
     { "gukz/ftFT.nvim",
-      config = function
+      config = function()
         vim.g.ftFT_disable_keymap_n = 1  -- Will not create key binding for ftFT in normal mode
         vim.g.ftFT_disable_keymap_ydc = 1  -- Will not create key binding for [ydc][ftFT] in normal mode
         vim.g.ftFT_disable_keymap_v = 1  -- Will not create key binding for ftFT in visual mode
