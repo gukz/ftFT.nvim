@@ -45,18 +45,7 @@ use f|t|F|T{char}, you will see something different, enjoy it!
     },
 ```
 
-3. maybe you just want to set some keybinding yourself, you can config this way
-``` lua
-    { "gukz/ftFT.nvim",
-      config = function
-        vim.g.ftFT_disable_keymap_n = 1  -- Will not create key binding for ftFT in normal mode
-        vim.g.ftFT_disable_keymap_ydc = 1  -- Will not create key binding for [ydc][ftFT] in normal mode
-
-        require("ftFT").setup()  -- Will only create key binding for ftFT in visual mode
-      end
-    },
-```
-do the keybinding yourself:
+3. you can also do the keybinding yourself
 ``` vim
 nnoremap f <cmd>lua require('ftFT').execute('f')<CR>
 nnoremap t <cmd>lua require('ftFT').execute('t')<CR>
