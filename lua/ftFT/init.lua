@@ -15,9 +15,6 @@ local function generate_ftFT_indexs(key, cur_col, line_content)
   --   { "b", 3 },
   --   { "c", 5 },
   -- }
-  if #line_content > 300 then
-    return {}
-  end
   if (not string.upper(key) == "F") and (not string.upper(key) == "T") then
     return {}
   end
