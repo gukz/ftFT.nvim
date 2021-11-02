@@ -1,30 +1,44 @@
-#### Pure lua plugin give f|t|F|T{char} __buffer safe__ highlights
+#### Introduction
+A pure Lua plugin aims to enhance the experience of the native f command (f|t|F|T{char}),
+it will not add extra function but only necessary highlights to help use f{char} easier.
 
 #### Demo
-use f|t|F|T{char}, you will see something different, enjoy it!
+After install, when you use f|t|F|T{char}, you will see something different, enjoy it!
 
 ![image](https://github.com/gukz/ftFT.nvim/blob/master/image/nvim_ftFT.png)
 
-#### add below codes to your plugin config
+#### Install
 1. Packer
 ``` lua
     ...
     { "some other plugin name" },
 
     { "gukz/ftFT.nvim",
-      config = function require("ftFT").setup() end
+      -- This will turn on all functions, if you don't like some of them, add more config to disable/change them
+      config = function() require("ftFT").setup() end
     },
 
     { "some other plugin name" },
     ...
 ```
+...
+other plugin manager support are comming soon
 
-#### default behavior and custom config
-1. by default, ftFT will use `Search` highlight to display, you can custom it by set `ftFT_hl_group`, shown as below
+#### Default behavior & Custom config
+below is a overall config items, if you don't want to do any config, you can just use config in `Install` section
 ``` lua
     { "gukz/ftFT.nvim",
-      config = function
-        vim.g.ftFT_hl_group = 'Todo' -- will use Todo highlitgt, default is Search
+      config = function()
+        vim.g.ftFT_hl_group = "Search" -- will use Search hl group to do the highlitgt
+
+        vim.g.ftFT_keymap_keys = {"f", "t", "F"} -- Will create key binding for "f", "t", "F", but not "T"
+        vim.g.ftFT_keymap_skip_n = 1  -- if set this, will not create key binding for ftFT in normal mode
+        vim.g.ftFT_keymap_skip_ydc = 1  -- if set this, will not create key binding for [ydc][ftFT] in normal mode
+        vim.g.ftFT_keymap_skip_v = 1  -- if set this, will not create key binding for ftFT in visual mode
+
+        -- ftFT will show another sight line below current line, shows you how many `;` you need to jump there
+        vim.g.ftFT_sight_disable = 1  -- if set this, will not have sight line
+        vim.g.ftFT_sight_hl_group = "Search"  -- if set htis, will use other hl group for sight line
 
         require("ftFT").setup()  -- this will create default keymapping for you
       end
@@ -32,20 +46,7 @@ use f|t|F|T{char}, you will see something different, enjoy it!
 
 ```
 
-2. by default, `require("ftFT").setup()` will create key binding for all `ftFT` in normal, visual and `yf,df,cf` mode, if you don't like this keymapping, you can disable part of them, shown as below
-``` lua
-    { "gukz/ftFT.nvim",
-      config = function
-        vim.g.ftFT_disable_keymap_n = 1  -- Will not create key binding for ftFT in normal mode
-        vim.g.ftFT_disable_keymap_ydc = 1  -- Will not create key binding for [ydc][ftFT] in normal mode
-        vim.g.ftFT_disable_keymap_v = 1  -- Will not create key binding for ftFT in visual mode
-
-        require("ftFT").setup()  -- if you config like above, no keymapping will create for you
-      end
-    },
-```
-
-3. you can also do the keybinding yourself
+you can also do the keybinding yourself
 ``` vim
 nnoremap f <cmd>lua require('ftFT').execute('f')<CR>
 nnoremap t <cmd>lua require('ftFT').execute('t')<CR>

@@ -1,19 +1,30 @@
--- calculate unique character index in a line
-local function char_exist(tbl, val)
+local function get_item_by_char(tbl, val)
+  -- input tbl:
+  -- {
+  --   { "a", 0 },
+  --   { "b", 3, 4, 6 },
+  -- }
+  -- input val:
+  -- "b"
+  --
+  -- result:
+  -- nil or { "b", 3, 4, 6 }
   for _, v in ipairs(tbl) do
     if v[1] == val then
-      return true
+      return v
     end
   end
-  return false
+  return nil
 end
 
+-- calculate character index in a line
 local function generate_ftFT_indexs(key, cur_col, line_content)
   -- result:
   -- {
+  --   -- first element is the character, second to last element is the 1st, 2nd element occur index
   --   { "a", 0 },
-  --   { "b", 3 },
-  --   { "c", 5 },
+  --   { "b", 3, 4, 6 },
+  --   { "c", 5, 7 },
   -- }
   if (not string.upper(key) == "F") and (not string.upper(key) == "T") then
     return {}
@@ -30,8 +41,12 @@ local function generate_ftFT_indexs(key, cur_col, line_content)
   for i = 1, max_iter do
     local index = cur_col + i * offset
     local char = line_content:sub(index, index)
-    if not char_exist(result, char) then
+    local item = get_item_by_char(result, char)
+    if item == nil then
       table.insert(result, {char, index - 1})
+    elseif #item < 11 then
+      -- allow record 2nd..9th duplicate character
+      table.insert(item, index - 1)
     end
   end
 
@@ -43,18 +58,18 @@ local M = {}
 
 function M.setup()
   local key_bind_opt = { noremap = true, silent = true }
-  local total_keys = { "f", "t", "F", "T" }
-  if vim.g.ftFT_disable_keymap_n == nil then
+  local total_keys = vim.g.ftFT_keymap_keys or { "f", "t", "F", "T" }
+  if vim.g.ftFT_keymap_skip_n == nil then
     for _, key in ipairs(total_keys) do
       vim.api.nvim_set_keymap("n", key, "<cmd>lua require('ftFT').execute('"..key.."')<CR>", key_bind_opt)
     end
   end
-  if vim.g.ftFT_disable_keymap_v == nil then
+  if vim.g.ftFT_keymap_skip_v == nil then
     for _, key in ipairs(total_keys) do
       vim.api.nvim_set_keymap("v", key, "<cmd>lua require('ftFT').execute('"..key.."')<CR>", key_bind_opt)
     end
   end
-  if vim.g.ftFT_disable_keymap_ydc == nil then
+  if vim.g.ftFT_keymap_skip_ydc == nil then
     for _, key in ipairs(total_keys) do
       vim.api.nvim_set_keymap("n", "y"..key, "<cmd>lua require('ftFT').execute('y"..key.."')<CR>", key_bind_opt)
       vim.api.nvim_set_keymap("n", "d"..key, "<cmd>lua require('ftFT').execute('d"..key.."')<CR>", key_bind_opt)
@@ -65,22 +80,38 @@ end
 
 function M.execute(key)
   local curpos = vim.fn.getcurpos()
-  local cur_row, cur_col = curpos[2], curpos[3]
-  local line_content = vim.api.nvim_buf_get_lines(0, cur_row - 1, cur_row, false)[1]
+  local cur_row, cur_col = curpos[2] - 1, curpos[3]
+  local line_content = vim.api.nvim_buf_get_lines(0, cur_row, cur_row + 1, false)[1]
   local hl_group = vim.g.ftFT_hl_group or 'Search'
+  local sight_hl_group = vim.g.ftFT_sight_hl_group or 'Search'
 
   local cur_ns = vim.api.nvim_create_namespace('ftFT_ns')
   local hl_amount = 0
   local mode_key = key:sub(#key, #key)
   for _, item in pairs(generate_ftFT_indexs(mode_key, cur_col, line_content)) do
-    -- item: { "a", 0 }
+    -- item: { "a", 0, 3, 5 }
     hl_amount = hl_amount + 1
-    vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row - 1, item[2], {
+    vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row, item[2], {
       virt_text = {{item[1], hl_group}},
       virt_text_pos = 'overlay',
       hl_mode = 'combine',
       priority = 65500
     })
+
+    -- draw sight line
+    if vim.g.ftFT_sight_disable == nil then
+      local rep = 1
+      for i = 3, #item do
+        vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row + 1, 0, {
+          virt_text = {{tostring(rep), sight_hl_group}},
+          virt_text_pos = 'overlay',
+          virt_text_win_col = item[i],
+          hl_mode = 'combine',
+          priority = 65500
+        })
+        rep = rep + 1
+      end
+    end
   end
 
   if hl_amount > 0 then vim.cmd('redraw') end
