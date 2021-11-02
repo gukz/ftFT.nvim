@@ -104,7 +104,6 @@ function M.execute(key)
       for i = 3, #item do
         vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row + 1, 0, {
           virt_text = {{tostring(rep), sight_hl_group}},
-          virt_text_pos = 'overlay',
           virt_text_win_col = item[i],
           hl_mode = 'combine',
           priority = 65500
