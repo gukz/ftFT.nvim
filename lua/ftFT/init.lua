@@ -91,15 +91,25 @@ function M.execute(key)
   for _, item in pairs(generate_ftFT_indexs(mode_key, cur_col, line_content)) do
     -- item: { "a", 0, 3, 5 }
     hl_amount = hl_amount + 1
-    vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row, item[2], {
-      virt_text = {{item[1], hl_group}},
-      virt_text_pos = 'overlay',
-      hl_mode = 'combine',
-      priority = 65500
-    })
+    if vim.v.count1 < #item then
+      vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row, item[1 + vim.v.count1], {
+        virt_text = {{item[1], hl_group}},
+        virt_text_pos = 'overlay',
+        hl_mode = 'combine',
+        priority = 65500
+      })
+    end
 
     -- draw sight line
-    if vim.g.ftFT_sight_disable == nil then
+    if vim.g.ftFT_sight_disable == nil and vim.v.count1 == 1 then
+      local bg_str = " "
+      vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row + 1, 0, {
+        virt_text = {{bg_str, sight_hl_group}},
+        virt_text_win_col = 0,
+        hl_mode = 'combine',
+        priority = 65500
+      })
+
       local rep = 1
       for i = 3, #item do
         vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row + 1, 0, {
@@ -120,7 +130,7 @@ function M.execute(key)
     if type(key2) == 'number' then
       key2 = vim.fn.nr2char(key2)
     end
-    vim.api.nvim_feedkeys(key..key2, 'n', false)
+    vim.api.nvim_feedkeys(tostring(vim.v.count1)..key..key2, 'n', false)
   end
   vim.api.nvim_buf_clear_namespace(0, cur_ns, 0, -1)
 end

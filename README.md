@@ -1,5 +1,5 @@
 #### Introduction
-A pure Lua plugin aims to enhance the experience of the native f command (f|t|F|T{char}),
+A pure Lua plugin aims to enhance the experience of the native f command (<number>f|t|F|T{char}),
 it will not add extra function but only necessary highlights to help use f{char} easier.
 
 #### Demo
