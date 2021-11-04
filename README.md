@@ -1,6 +1,6 @@
 #### Introduction
-A pure Lua plugin aims to enhance the experience of the native f command (<number>f|t|F|T{char}),
-it will not add extra function but only necessary highlights to help use f{char} easier.
+__Everything is just same with native f|t|F|T but with useful highlights!__
+
 
 #### Demo
 After install, when you use f|t|F|T{char}, you will see something different, enjoy it!
