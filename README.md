@@ -36,8 +36,8 @@ below is a overall config items, if you don't want to do any config, you can jus
         vim.g.ftFT_keymap_skip_ydc = 1  -- if set this, will not create key binding for [ydc][ftFT] in normal mode
         vim.g.ftFT_keymap_skip_v = 1  -- if set this, will not create key binding for ftFT in visual mode
 
-        -- ftFT will show another sight line below current line, shows you how many `;` you need to jump there
-        vim.g.ftFT_sight_disable = 1  -- if set this, will not have sight line
+        -- ftFT will show another sight line below current line, shows you how many `;` you need to jump there, disabled by default
+        vim.g.ftFT_sight_enable = 1  -- if set this, will show extra sight line
         vim.g.ftFT_sight_hl_group = "Search"  -- if set htis, will use other hl group for sight line
 
         require("ftFT").setup()  -- this will create default keymapping for you

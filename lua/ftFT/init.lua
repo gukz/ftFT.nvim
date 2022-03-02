@@ -101,7 +101,7 @@ function M.execute(key)
     end
 
     -- draw sight line
-    if vim.g.ftFT_sight_disable == nil and vim.v.count1 == 1 then
+    if vim.g.ftFT_sight_enable != nil and vim.v.count1 == 1 then
       local bg_str = " "
       vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row + 1, 0, {
         virt_text = {{bg_str, sight_hl_group}},
