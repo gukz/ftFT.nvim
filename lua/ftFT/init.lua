@@ -130,7 +130,7 @@ function M.execute(key)
     if type(key2) == 'number' then
       key2 = vim.fn.nr2char(key2)
     end
-    vim.api.nvim_feedkeys(tostring(vim.v.count1)..key..key2, 'n', false)
+    vim.api.nvim_feedkeys(tostring(vim.v.count1)..key..key2, 'ni', false)
   end
   vim.api.nvim_buf_clear_namespace(0, cur_ns, 0, -1)
 end
