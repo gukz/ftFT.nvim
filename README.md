@@ -21,6 +21,19 @@ After install, when you use f|t|F|T{char}, you will see something different, enj
     { "some other plugin name" },
     ...
 ```
+
+2. Lazy
+``` lua
+  { "some other plugin name" },
+  
+  {
+    "gukz/ftFT.nvim",
+    keys = { "f", "t", "F", "T" },
+    config = true,
+  },
+  
+  { "some other plugin name" },
+```
 ...
 other plugin manager support are comming soon
 
