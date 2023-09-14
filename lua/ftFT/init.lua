@@ -19,6 +19,9 @@ end
 
 -- calculate character index in a line
 local function generate_ftFT_indexs(key, cur_col, line_content)
+  -- input key: f t F T
+  -- input cur_col: 5 column number
+  -- input line_content: the line content value
   -- result:
   -- {
   --   -- first element is the character, second to last element is the 1st, 2nd element occur index
@@ -26,7 +29,7 @@ local function generate_ftFT_indexs(key, cur_col, line_content)
   --   { "b", 3, 4, 6 },
   --   { "c", 5, 7 },
   -- }
-  if (not string.upper(key) == "F") and (not string.upper(key) == "T") then
+  if (not (string.upper(key) == "F")) and (not (string.upper(key) == "T")) then
     return {}
   end
 
@@ -41,15 +44,15 @@ local function generate_ftFT_indexs(key, cur_col, line_content)
   for i = 1, max_iter do
     local index = cur_col + i * offset
     local char = line_content:sub(index, index)
-    local item = get_item_by_char(result, char)
-    if item == nil then
-      table.insert(result, {char, index - 1})
-    elseif #item < 11 then
-      -- allow record 2nd..9th duplicate character
-      table.insert(item, index - 1)
+    if (not (string.byte(char) == nil)) and (string.byte(char) < 128) then
+      local item = get_item_by_char(result, char)
+      if item == nil then
+        table.insert(result, {char, index - 1})
+      elseif #item < 11 then -- allow record 2nd..9th duplicate character
+        table.insert(item, index - 1)
+      end
     end
   end
-
   return result
 end
 
@@ -90,32 +93,23 @@ function M.execute(key)
   local mode_key = key:sub(#key, #key)
   for _, item in pairs(generate_ftFT_indexs(mode_key, cur_col, line_content)) do
     -- item: { "a", 0, 3, 5 }
+    -- draw cur line first hit character
     hl_amount = hl_amount + 1
     if vim.v.count1 < #item then
       vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row, item[1 + vim.v.count1], {
         virt_text = {{item[1], hl_group}},
         virt_text_pos = 'overlay',
-        hl_mode = 'combine',
         priority = 65500
       })
     end
 
     -- draw sight line
     if (not (vim.g.ftFT_sight_enable == nil)) and vim.v.count1 == 1 then
-      local bg_str = " "
-      vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row + 1, 0, {
-        virt_text = {{bg_str, sight_hl_group}},
-        virt_text_win_col = 0,
-        hl_mode = 'combine',
-        priority = 65500
-      })
-
       local rep = 1
       for i = 3, #item do
         vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row + 1, 0, {
           virt_text = {{tostring(rep), sight_hl_group}},
           virt_text_win_col = item[i],
-          hl_mode = 'combine',
           priority = 65500
         })
         rep = rep + 1
