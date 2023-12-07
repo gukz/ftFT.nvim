@@ -8,21 +8,7 @@ After install, when you use f|t|F|T{char}, you will see something different, enj
 ![image](https://github.com/gukz/ftFT.nvim/blob/master/image/nvim_ftFT.png)
 
 #### Install
-1. Packer
-``` lua
-    ...
-    { "some other plugin name" },
-
-    { "gukz/ftFT.nvim",
-      -- This will turn on all functions, if you don't like some of them, add more config to disable/change them
-      config = function() require("ftFT").setup() end
-    },
-
-    { "some other plugin name" },
-    ...
-```
-
-2. Lazy
+Lazy
 ``` lua
   { "some other plugin name" },
   
@@ -34,32 +20,24 @@ After install, when you use f|t|F|T{char}, you will see something different, enj
   
   { "some other plugin name" },
 ```
-...
-other plugin manager support are comming soon
 
 #### Default behavior & Custom config
 below is a overall config items, if you don't want to do any config, you can just use config in `Install` section
 ``` lua
     { "gukz/ftFT.nvim",
-      config = function()
-        vim.g.ftFT_hl_group = "Search" -- will use Search hl group to do the highlitgt
-
-        vim.g.ftFT_keymap_keys = {"f", "t", "F"} -- Will create key binding for "f", "t", "F", but not "T"
-        vim.g.ftFT_keymap_skip_n = 1  -- if set this, will not create key binding for ftFT in normal mode
-        vim.g.ftFT_keymap_skip_ydc = 1  -- if set this, will not create key binding for [ydc][ftFT] in normal mode
-        vim.g.ftFT_keymap_skip_v = 1  -- if set this, will not create key binding for ftFT in visual mode
-
-        -- ftFT will show another sight line below current line, shows you how many `;` you need to jump there, disabled by default
-        vim.g.ftFT_sight_enable = 1  -- if set this, will show extra sight line
-        vim.g.ftFT_sight_hl_group = "Search"  -- if set htis, will use other hl group for sight line
-
-        require("ftFT").setup()  -- this will create default keymapping for you
-      end
+      opts = {
+        keys = {"f", "t", "F", "T"}, -- the keys that enable highlights.
+        modes = {"n", "v"},   -- the modes this plugin works in.
+        hl_group = "Search",  -- this property specify the hi group
+        sight_hl_group = "",  -- this property specify the hi group for sight line, if not set, the sight line will not show.
+      },
+      config = true,
     },
 
 ```
 
-you can also do the keybinding yourself
+[Not recommended] you can also do the keybinding
+It can work, but this plugin will hide the cursor.
 ``` vim
 nnoremap f <cmd>lua require('ftFT').execute('f')<CR>
 nnoremap t <cmd>lua require('ftFT').execute('t')<CR>

@@ -1,3 +1,12 @@
+local M = {
+  keys = {"f", "t", "F", "T"},
+  modes = {"n", "v"},
+  hl_group = "Search",
+  sight_hl_group = "",
+  flag = "",
+  ns = vim.api.nvim_create_namespace('ftFT_ns'),
+}
+
 local function get_item_by_char(tbl, val)
   -- input tbl:
   -- {
@@ -56,39 +65,69 @@ local function generate_ftFT_indexs(key, cur_col, line_content)
   return result
 end
 
-
-local M = {}
-
-function M.setup()
-  local key_bind_opt = { noremap = true, silent = true }
-  local total_keys = vim.g.ftFT_keymap_keys or { "f", "t", "F", "T" }
-  if vim.g.ftFT_keymap_skip_n == nil then
-    for _, key in ipairs(total_keys) do
-      vim.api.nvim_set_keymap("n", key, "<cmd>lua require('ftFT').execute('"..key.."')<CR>", key_bind_opt)
+local function contains(tb, element)
+  for _, item in ipairs(tb) do
+    if item == element then
+      return true
     end
   end
-  if vim.g.ftFT_keymap_skip_v == nil then
-    for _, key in ipairs(total_keys) do
-      vim.api.nvim_set_keymap("v", key, "<cmd>lua require('ftFT').execute('"..key.."')<CR>", key_bind_opt)
-    end
-  end
-  if vim.g.ftFT_keymap_skip_ydc == nil then
-    for _, key in ipairs(total_keys) do
-      vim.api.nvim_set_keymap("n", "y"..key, "<cmd>lua require('ftFT').execute('y"..key.."')<CR>", key_bind_opt)
-      vim.api.nvim_set_keymap("n", "d"..key, "<cmd>lua require('ftFT').execute('d"..key.."')<CR>", key_bind_opt)
-      vim.api.nvim_set_keymap("n", "c"..key, "<cmd>lua require('ftFT').execute('c"..key.."')<CR>", key_bind_opt)
+  return false
+end
+
+local function onKey(k)
+  if contains(M.modes, vim.fn.mode()) then
+    if M.flag == "" then
+      if contains(M.keys, k) then
+        M.flag = k
+        M.highlight(k)
+      end
+    else
+      M.flag = ""
+      vim.api.nvim_buf_clear_namespace(0, M.ns, 0, -1)
     end
   end
 end
 
+function M.setup(opts)
+  if (not (opts == nil)) and (not (opts.keys == nil)) then
+    M.keys = opts.keys
+  end
+  if (not (opts == nil)) and (not (opts.modes == nil)) then
+    M.modes = opts.modes
+  end
+  if (not (opts == nil)) and (not (opts.hl_group == nil)) then
+    M.hl_group = opts.hl_group
+  end
+  if (not (opts == nil)) and (not (opts.sight_hl_group == nil)) then
+    M.sight_hl_group = opts.sight_hl_group
+  end
+
+  if (not (vim.g.ftFT_sight_enable == nil)) or (not (vim.g.ftFT_keymap_skip_n == nil)) or (not (vim.g.ftFT_keymap_skip_v == nil)) or (not (vim.g.ftFT_keymap_skip_ydc == nil)) or (not (vim.g.ftFT_hl_group == nil)) then
+    error("ftFT.nvim has breaking changes, pls go to https://github.com/gukz/ftFT.nvim for more info.")
+  end
+  vim.on_key(onKey, 0)
+end
+
 function M.execute(key)
+  M.highlight(key)
+  local ok, key2 = pcall(vim.fn.getchar)
+  if ok then
+    if type(key2) == 'number' then
+      key2 = vim.fn.nr2char(key2)
+    end
+    vim.api.nvim_feedkeys(tostring(vim.v.count1)..key..key2, 'ni', false)
+  end
+  vim.api.nvim_buf_clear_namespace(0, M.ns, 0, -1)
+end
+
+function M.highlight(key)
   local curpos = vim.fn.getcurpos()
   local cur_row, cur_col = curpos[2] - 1, curpos[3]
   local line_content = vim.api.nvim_buf_get_lines(0, cur_row, cur_row + 1, false)[1]
-  local hl_group = vim.g.ftFT_hl_group or 'Search'
-  local sight_hl_group = vim.g.ftFT_sight_hl_group or 'Search'
+  local hl_group = M.hl_group
+  local sight_hl_group = M.sight_hl_group 
 
-  local cur_ns = vim.api.nvim_create_namespace('ftFT_ns')
+  local cur_ns = M.ns
   local hl_amount = 0
   local mode_key = key:sub(#key, #key)
   for _, item in pairs(generate_ftFT_indexs(mode_key, cur_col, line_content)) do
@@ -104,7 +143,7 @@ function M.execute(key)
     end
 
     -- draw sight line
-    if (not (vim.g.ftFT_sight_enable == nil)) and vim.v.count1 == 1 then
+    if (not (sight_hl_group == "")) and vim.v.count1 == 1 then
       local rep = 1
       for i = 3, #item do
         vim.api.nvim_buf_set_extmark(0, cur_ns, cur_row + 1, 0, {
@@ -117,16 +156,9 @@ function M.execute(key)
     end
   end
 
-  if hl_amount > 0 then vim.cmd('redraw') end
-
-  local ok, key2 = pcall(vim.fn.getchar)
-  if ok then
-    if type(key2) == 'number' then
-      key2 = vim.fn.nr2char(key2)
-    end
-    vim.api.nvim_feedkeys(tostring(vim.v.count1)..key..key2, 'ni', false)
+  if hl_amount > 0 then
+    vim.cmd('redraw')
   end
-  vim.api.nvim_buf_clear_namespace(0, cur_ns, 0, -1)
 end
 
 return M
