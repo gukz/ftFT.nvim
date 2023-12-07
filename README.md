@@ -22,6 +22,8 @@ Lazy
 ```
 
 #### Default behavior & Custom config
+__Breaking Changes:__ vim.g.ftFT_* configs are drprecated, please use the `opts` or use `require("ftFT").setup(opts)`
+
 below is a overall config items, if you don't want to do any config, you can just use config in `Install` section
 ``` lua
     { "gukz/ftFT.nvim",
@@ -33,7 +35,6 @@ below is a overall config items, if you don't want to do any config, you can jus
       },
       config = true,
     },
-
 ```
 
 [Not recommended] you can also do the keybinding
