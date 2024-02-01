@@ -1,9 +1,9 @@
 local M = {
-  keys = {"f", "t", "F", "T"},
+  actionKeys = {"f", "t", "F", "T", },
   modes = {"n", "v"},
   hl_group = "Search",
   sight_hl_group = "",
-  flag = "",
+  actionKey = "",
   ns = vim.api.nvim_create_namespace('ftFT_ns'),
 }
 
@@ -65,32 +65,16 @@ local function generate_ftFT_indexs(key, cur_col, line_content)
   return result
 end
 
-local function contains(tb, element)
-  for _, item in ipairs(tb) do
-    if item == element then
-      return true
-    end
-  end
-  return false
-end
-
-local function onKey(k)
-  if contains(M.modes, vim.fn.mode()) then
-    if M.flag == "" then
-      if contains(M.keys, k) then
-        M.flag = k
-        M.highlight(k)
-      end
-    else
-      M.flag = ""
+local function resetHighlight(k)
+  if (not (M.actionKey == "")) then
+      M.actionKey = ""
       vim.api.nvim_buf_clear_namespace(0, M.ns, 0, -1)
-    end
   end
 end
 
 function M.setup(opts)
   if (not (opts == nil)) and (not (opts.keys == nil)) then
-    M.keys = opts.keys
+    M.actionKeys = opts.keys
   end
   if (not (opts == nil)) and (not (opts.modes == nil)) then
     M.modes = opts.modes
@@ -101,14 +85,20 @@ function M.setup(opts)
   if (not (opts == nil)) and (not (opts.sight_hl_group == nil)) then
     M.sight_hl_group = opts.sight_hl_group
   end
-
   if (not (vim.g.ftFT_sight_enable == nil)) or (not (vim.g.ftFT_keymap_skip_n == nil)) or (not (vim.g.ftFT_keymap_skip_v == nil)) or (not (vim.g.ftFT_keymap_skip_ydc == nil)) or (not (vim.g.ftFT_hl_group == nil)) then
-    error("vim.g.ftFT_* configs are drprecated, pls go to https://github.com/gukz/ftFT.nvim for more info.")
+     error("vim.g.ftFT_* configs are drprecated, pls go to https://github.com/gukz/ftFT.nvim for more info.")
   end
-  vim.on_key(onKey, 0)
+  for _, mode in ipairs(M.modes) do
+    for _, key in ipairs(M.actionKeys) do
+      vim.keymap.set(mode, key, function() M.execute(key) end, {noremap=true,silent=true,desc=key})
+    end
+  end
+
+  vim.on_key(resetHighlight, 0)
 end
 
 function M.execute(key)
+  M.actionKey = key
   M.highlight(key)
   local ok, key2 = pcall(vim.fn.getchar)
   if ok then
@@ -117,7 +107,6 @@ function M.execute(key)
     end
     vim.api.nvim_feedkeys(tostring(vim.v.count1)..key..key2, 'ni', false)
   end
-  vim.api.nvim_buf_clear_namespace(0, M.ns, 0, -1)
 end
 
 function M.highlight(key)
@@ -125,7 +114,7 @@ function M.highlight(key)
   local cur_row, cur_col = curpos[2] - 1, curpos[3]
   local line_content = vim.api.nvim_buf_get_lines(0, cur_row, cur_row + 1, false)[1]
   local hl_group = M.hl_group
-  local sight_hl_group = M.sight_hl_group 
+  local sight_hl_group = M.sight_hl_group
 
   local cur_ns = M.ns
   local hl_amount = 0
