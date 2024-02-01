@@ -85,9 +85,6 @@ function M.setup(opts)
   if (not (opts == nil)) and (not (opts.sight_hl_group == nil)) then
     M.sight_hl_group = opts.sight_hl_group
   end
-  if (not (vim.g.ftFT_sight_enable == nil)) or (not (vim.g.ftFT_keymap_skip_n == nil)) or (not (vim.g.ftFT_keymap_skip_v == nil)) or (not (vim.g.ftFT_keymap_skip_ydc == nil)) or (not (vim.g.ftFT_hl_group == nil)) then
-     error("vim.g.ftFT_* configs are drprecated, pls go to https://github.com/gukz/ftFT.nvim for more info.")
-  end
   for _, mode in ipairs(M.modes) do
     for _, key in ipairs(M.actionKeys) do
       vim.keymap.set(mode, key, function() M.execute(key) end, {noremap=true,silent=true,desc=key})
