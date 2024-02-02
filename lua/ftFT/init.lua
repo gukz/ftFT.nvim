@@ -90,6 +90,12 @@ function M.setup(opts)
       vim.keymap.set(mode, key, function() M.execute(key) end, {noremap=true,silent=true,desc=key})
     end
   end
+  local preKey = {'d', 'y', 'c'}
+  for _, pre in ipairs(preKey) do
+    for _, key in ipairs(M.actionKeys) do
+      vim.keymap.set('n', pre..key, function() M.execute(pre..key) end, {noremap=true,silent=true,desc=pre..key})
+    end
+  end
 
   vim.on_key(resetHighlight, 0)
 end
